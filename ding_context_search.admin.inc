@@ -1,12 +1,12 @@
 <?php
 
-function ding_context_related_search_admin_settings($form, &$form_state) {
+function ding_context_search_admin_settings($form, &$form_state) {
   $form['context_search'] = array(
     '#type' => 'fieldset',
     '#title' => t('Filters'),
     '#prefix' => '<div id="ding-context-search-filters-wrapper">',
     '#suffix' => '</div>',
-    '#theme' => 'ding_context_related_search_table',
+    '#theme' => 'ding_context_search_table',
   );
 
   $form['context_search']['#tree'] = TRUE;
@@ -34,11 +34,11 @@ function ding_context_related_search_admin_settings($form, &$form_state) {
       '#value' => t('Remove'),
       '#name' => 'filter_remove_' . $key,
       '#filter_key' => $key,
-      '#submit' => array('ding_context_related_search_remove_filter_submit'),
+      '#submit' => array('ding_context_search_remove_filter_submit'),
       '#limit_validation_errors' => array(),
       '#ajax' => array(
         'wrapper' => 'ding-context-search-filters-wrapper',
-        'callback' => 'ding_context_related_search_remove_ajax_handler',
+        'callback' => 'ding_context_search_remove_ajax_handler',
       ),
     );
   }
@@ -47,11 +47,11 @@ function ding_context_related_search_admin_settings($form, &$form_state) {
     '#type' => 'submit',
     '#value' => t('Add'),
     '#name' => 'context_filter_add_btn',
-    '#submit' => array('ding_context_related_search_add_submit'),
+    '#submit' => array('ding_context_search_add_submit'),
     '#limit_validation_errors' => array(),
     '#ajax' => array(
       'wrapper' => 'ding-context-search-filters-wrapper',
-      'callback' => 'ding_context_related_search_add_ajax_handler',
+      'callback' => 'ding_context_search_add_ajax_handler',
     ),
   );
 
@@ -66,7 +66,7 @@ function ding_context_related_search_admin_settings($form, &$form_state) {
 /**
  * Submit handler for remove button.
  */
-function ding_context_related_search_remove_filter_submit($form, &$form_state) {
+function ding_context_search_remove_filter_submit($form, &$form_state) {
   $element = $form_state['triggering_element'];
   unset($form_state['filters_count'][$element['#filter_key']]);
   $form_state['rebuild'] = TRUE;
@@ -75,7 +75,7 @@ function ding_context_related_search_remove_filter_submit($form, &$form_state) {
 /**
  * Ajax handler for remove button.
  */
-function ding_context_related_search_remove_ajax_handler($form, &$form_state) {
+function ding_context_search_remove_ajax_handler($form, &$form_state) {
   $element = $form_state['triggering_element'];
   $parents = $element['#parents'];
   $parents = array_slice($parents, 0, count($parents) - 3);
@@ -85,7 +85,7 @@ function ding_context_related_search_remove_ajax_handler($form, &$form_state) {
 /**
  * Submit handler for adding filter.
  */
-function ding_context_related_search_add_submit($form, &$form_state) {
+function ding_context_search_add_submit($form, &$form_state) {
   $id = !empty($form_state['filters_count']) ? max($form_state['filters_count']) + 1 : 1;
   $form_state['filters_count'][$id] = $id;
   $form_state['rebuild'] = TRUE;
@@ -94,14 +94,14 @@ function ding_context_related_search_add_submit($form, &$form_state) {
 /**
  * Ajax handler for add button.
  */
-function ding_context_related_search_add_ajax_handler($form, $form_state) {
+function ding_context_search_add_ajax_handler($form, $form_state) {
   $element = $form_state['triggering_element'];
   $parents = $element['#parents'];
   array_pop($parents);
   return drupal_array_get_nested_value($form, $parents);
 }
 
-function ding_context_related_search_admin_settings_submit($form, &$form_state) {
+function ding_context_search_admin_settings_submit($form, &$form_state) {
   $counter = $form_state['filters_count'];
   $records = array();
   $wrapper = $form_state['values']['context_search']['filters'];

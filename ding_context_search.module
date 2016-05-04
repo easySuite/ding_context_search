@@ -7,14 +7,14 @@
 /**
  * Implements hook_menu().
  */
-function ding_context_related_search_menu() {
+function ding_context_search_menu() {
   $items['admin/config/ding/dcrs'] = array(
     'title' => 'Ding context-related search settings',
     'type' => MENU_NORMAL_ITEM,
     'access arguments' => array('access administration'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('ding_context_related_search_admin_settings'),
-    'file' => 'ding_context_related_search.admin.inc',
+    'page arguments' => array('ding_context_search_admin_settings'),
+    'file' => 'ding_context_search.admin.inc',
   );
 
   return $items;
@@ -23,9 +23,9 @@ function ding_context_related_search_menu() {
 /**
  * Implements hook_theme().
  */
-function ding_context_related_search_theme($existing, $type, $theme, $path) {
+function ding_context_search_theme($existing, $type, $theme, $path) {
   return array(
-    'ding_context_related_search_table' => array(
+    'ding_context_search_table' => array(
       'render element' => 'form',
     ),
   );
@@ -34,7 +34,7 @@ function ding_context_related_search_theme($existing, $type, $theme, $path) {
 /**
  * Custom theme handler for rendering prices as table.
  */
-function theme_ding_context_related_search_table($variables) {
+function theme_ding_context_search_table($variables) {
   $form = $variables['form'];
   $rows = array();
   foreach (element_children($form['filters']) as $id) {
@@ -63,9 +63,9 @@ function theme_ding_context_related_search_table($variables) {
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function ding_context_related_search_form_search_block_form_alter(&$form, &$form_state) {
-  $form['#submit'][] =  'ding_context_related_search_filter_submit';
-//  $form['actions']['submit']['#submit'][] =  'ding_context_related_search_filter_submit';
+function ding_context_search_form_search_block_form_alter(&$form, &$form_state) {
+  $form['#submit'][] =  'ding_context_search_filter_submit';
+//  $form['actions']['submit']['#submit'][] =  'ding_context_search_filter_submit';
 }
 
 /**
@@ -74,7 +74,7 @@ function ding_context_related_search_form_search_block_form_alter(&$form, &$form
  * @param $form
  * @param $form_state
  */
-function ding_context_related_search_filter_submit($form, &$form_state) {
+function ding_context_search_filter_submit($form, &$form_state) {
   $url = parse_url($_SERVER['HTTP_REFERER']);
 //  var_dump($url);
 }
