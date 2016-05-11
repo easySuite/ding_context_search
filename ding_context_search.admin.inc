@@ -1,17 +1,33 @@
 <?php
+/**
+ * @file
+ *   Represents admin form for ding content related search.
+ */
 
+/**
+ * Form handler for settings form.
+ *
+ * @param array $form
+ *   Array of form elements.
+ * @param array $form_state
+ *   Array of form states.
+
+ * @return array
+ * Array of defined form elements.
+ */
 function ding_context_search_admin_settings($form, &$form_state) {
+  $form['#tree'] = TRUE;
+  $filters = variable_get('context_search_settings', '');
+
   $form['context_search'] = array(
     '#type' => 'fieldset',
     '#title' => t('Filters'),
     '#prefix' => '<div id="ding-context-search-filters-wrapper">',
     '#suffix' => '</div>',
     '#theme' => 'ding_context_search_table',
+    '#desctiption' => t('Represents list of urls and related filter.'),
   );
 
-  $form['context_search']['#tree'] = TRUE;
-
-  $filters = variable_get('context_search', '');
   if (!isset($form_state['filters_count'])) {
     $form_state['filters_count'] = empty($filters) ? range(0, 0) : range(0, count($filters));
   }
@@ -19,13 +35,13 @@ function ding_context_search_admin_settings($form, &$form_state) {
   foreach ($form_state['filters_count'] as $key) {
     $form['context_search']['filters'][$key]['url'] = array(
       '#type' => 'textfield',
-      '#default_value' => isset($filters) ? $filters[$key]['url'] : '',
+      '#default_value' => isset($filters[$key]) ? $filters[$key]['url'] : '',
       '#required' => TRUE,
     );
 
     $form['context_search']['filters'][$key]['filter'] = array(
       '#type' => 'textfield',
-      '#default_value' => isset($filters) ? $filters[$key]['filter'] : '',
+      '#default_value' => isset($filters[$key]) ? $filters[$key]['filter'] : '',
       '#required' => TRUE,
     );
 
@@ -43,7 +59,7 @@ function ding_context_search_admin_settings($form, &$form_state) {
     );
   }
 
-  $form['context_search']['filters']['add'] = array(
+  $form['context_search']['add'] = array(
     '#type' => 'submit',
     '#value' => t('Add'),
     '#name' => 'context_filter_add_btn',
@@ -101,21 +117,14 @@ function ding_context_search_add_ajax_handler($form, $form_state) {
   return drupal_array_get_nested_value($form, $parents);
 }
 
+/**
+ * Submit handler for saving settings.
+ */
 function ding_context_search_admin_settings_submit($form, &$form_state) {
-  $counter = $form_state['filters_count'];
-  $records = array();
   $wrapper = $form_state['values']['context_search']['filters'];
-  foreach ($counter as $item) {
-    $url = $wrapper[$item]['url'];
-    $filter = $wrapper[$item]['filter'];
-    $records[$item] = array(
-      'url' => $url,
-      'filter' => $filter,
-    );
+  foreach ($wrapper as &$item) {
+    unset($item['remove']);
   }
-
-  variable_set('context_search', $records);
-  unset($form_state['values']['context_search']);
-
-  drupal_set_message(t('The form has been submitted.'));
+  variable_set('context_search_settings', array_values($wrapper));
+  drupal_set_message(t('Settings was successfully saved.'));
 }

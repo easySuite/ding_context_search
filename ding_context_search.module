@@ -61,20 +61,19 @@ function theme_ding_context_search_table($variables) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_ting_search_fields().
  */
-function ding_context_search_form_search_block_form_alter(&$form, &$form_state) {
-  $form['#submit'][] =  'ding_context_search_filter_submit';
-//  $form['actions']['submit']['#submit'][] =  'ding_context_search_filter_submit';
-}
-
-/**
- * Submit handler for adding context related filters.
- *
- * @param $form
- * @param $form_state
- */
-function ding_context_search_filter_submit($form, &$form_state) {
+function ding_context_search_ting_search_fields_alter(&$fields) {
+  $settings = variable_get('context_search_settings', array());
   $url = parse_url($_SERVER['HTTP_REFERER']);
-//  var_dump($url);
+  $value = NULL;
+  foreach ($settings as $setting) {
+    if ($url['path'] == $setting['url']) {
+      $value = $setting['filter'];
+      break;
+    }
+  }
+  if (!empty($value)) {
+    $fields['ding_context_related_search_filter']['value'] = $value;
+  }
 }
