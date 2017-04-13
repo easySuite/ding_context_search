@@ -66,14 +66,10 @@ function theme_ding_context_search_table($variables) {
 function ding_context_search_ting_search_fields_alter(&$fields) {
   $settings = variable_get('context_search_settings', array());
   $url = parse_url($_SERVER['HTTP_REFERER']);
-  $value = NULL;
-  foreach ($settings as $setting) {
-    if ($url['path'] == $setting['url']) {
-      $value = $setting['filter'];
-      break;
+
+  foreach ($settings as $key => $setting) {
+    if ($url['path'] == $setting['url'] && !empty($setting['filter'])) {
+      $fields[$key]['value'] = $setting['filter'];
     }
-  }
-  if (!empty($value)) {
-    $fields['ding_context_related_search_filter']['value'] = $value;
   }
 }
