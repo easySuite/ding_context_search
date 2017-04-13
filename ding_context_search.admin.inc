@@ -29,7 +29,7 @@ function ding_context_search_admin_settings($form, &$form_state) {
   );
 
   if (!isset($form_state['filters_count'])) {
-    $form_state['filters_count'] = empty($filters) ? range(0, 0) : range(0, count($filters));
+    $form_state['filters_count'] = empty($filters) ? range(0, 0) : range(0, count($filters) - 1);
   }
 
   foreach ($form_state['filters_count'] as $key) {
